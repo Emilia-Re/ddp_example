@@ -29,7 +29,9 @@
 #import os
 #local_rank = int(os.environ["LOCAL_RANK"])
 
-
+## 1 2 4 7号卡可用
+CUDA_VISIBLE_DEVICES="1,2,4,7" python -m torch.distributed.launch --nproc_per_node 4 main.py
+#通过CUDA_VISIBLE_DEVICES="1,2,4,7"来指定使用的显卡
 torchrun --standalone --nnodes=1 --nproc-per-node=4 main.py
 
 
