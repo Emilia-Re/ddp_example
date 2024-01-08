@@ -12,7 +12,7 @@
 #    YOUR_TRAINING_SCRIPT.py (--arg1 ... train script args...)
 
 #参考https://pytorch.org/docs/stable/elastic/run.html#launcher-api
-
+#当前服务器的cuda版本为12.0  使用较老的torch包在多卡训练时会报错
 torchrun --standalone --nnodes=1 --nproc-per-node=4 main.py
 
 

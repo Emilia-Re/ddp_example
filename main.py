@@ -1,6 +1,8 @@
 ################
 ## main.py文件
 import argparse
+import os
+
 from tqdm import tqdm
 import torch
 import torchvision
@@ -39,8 +41,7 @@ def get_dataset():
         torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
-    my_trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                               download=True, transform=transform)
+    my_trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
     # DDP：使用DistributedSampler，DDP帮我们把细节都封装起来了。
     #      用，就完事儿！sampler的原理，第二篇中有介绍。
     train_sampler = torch.utils.data.distributed.DistributedSampler(my_trainset)
@@ -57,7 +58,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--local_rank", default=-1, type=int)
 FLAGS = parser.parse_args()
 local_rank = FLAGS.local_rank
-
+local_rank=int(os.environ['LOCAL_RANK'])
 # DDP：DDP backend初始化
 torch.cuda.set_device(local_rank)
 dist.init_process_group(backend='nccl')  # nccl是GPU设备上最快、最推荐的后端
@@ -73,7 +74,6 @@ if dist.get_rank() == 0 and ckpt_path is not None:
     model.load_state_dict(torch.load(ckpt_path))
 # DDP: 构造DDP model
 model = DDP(model, device_ids=[local_rank], output_device=local_rank)
-
 # DDP: 要在构造DDP model之后，才能用model初始化optimizer。
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
@@ -82,7 +82,7 @@ loss_func = nn.CrossEntropyLoss().to(local_rank)
 
 ### 3. 网络训练  ###
 model.train()
-iterator = tqdm(range(100))
+iterator = tqdm(range(3))
 for epoch in iterator:
     # DDP：设置sampler的epoch，
     # DistributedSampler需要这个来指定shuffle方式，
