@@ -53,11 +53,13 @@ def get_dataset():
 
 
 ### 2. 初始化我们的模型、数据、各种配置  ####
-# DDP：从外部得到local_rank参数
-parser = argparse.ArgumentParser()
-parser.add_argument("--local_rank", default=-1, type=int)
-FLAGS = parser.parse_args()
-local_rank = FLAGS.local_rank
+# DDP：从外部得到local_rank参数，老方法用torch.distributed.launch启动
+# parser = argparse.ArgumentParser()
+# parser.add_argument("--local_rank", default=-1, type=int)
+# FLAGS = parser.parse_args()
+# local_rank = FLAGS.local_rank
+
+#新版本用下边的方法得到local_rank，下边的方法与torchrun一起使用
 local_rank=int(os.environ['LOCAL_RANK'])
 # DDP：DDP backend初始化
 torch.cuda.set_device(local_rank)
