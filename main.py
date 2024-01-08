@@ -48,7 +48,7 @@ def get_dataset():
     # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。
     #      也就是说，总batch_size是这里的batch_size再乘以并行数(world_size)。
     trainloader = torch.utils.data.DataLoader(my_trainset,
-                                              batch_size=16, num_workers=2, sampler=train_sampler)
+                                              batch_size=2, num_workers=2, sampler=train_sampler)
     return trainloader
 
 
