@@ -15,5 +15,5 @@
 #参考https://pytorch.org/docs/stable/elastic/run.html#launcher-api
 #当前服务器的cuda版本为12.0  使用较老的torch包在多卡训练时会报错
 CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --standalone --nnodes=1 --nproc-per-node=4 main.py
-
+#CUDA_VISIBLE_DEVICES="0,1,2,3"   变量的引号加不加都行
 
